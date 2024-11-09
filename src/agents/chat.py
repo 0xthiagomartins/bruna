@@ -35,7 +35,7 @@ class Chat(BaseAgent):
         return store[session_id]
 
     def __get_chain(self) -> Runnable:
-        return self.prompt | ChatGroq(model="mixtral-8x7b-32768")
+        return self.prompt | ChatGroq(model="llama3-8b-8192")
 
     def send(self, message: str) -> AIMessage:
         with_message_history = RunnableWithMessageHistory(
