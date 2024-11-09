@@ -1,0 +1,1 @@
+AMQP_URI: ${CLOUD_AMQPAR:amqps://amvejhbq:F8XmiUteloGhmzc2oziK0H8w0P2evU79@jaragua.lmq.cloudamqp.com/amvejhbq}
