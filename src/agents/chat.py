@@ -27,7 +27,7 @@ class Chat(BaseAgent):
 
     def __init__(self, session_id: str):
         self.session_id = session_id
-        self.history = self.__get_session_history(session_id)
+        self.history: BaseChatMessageHistory = self.__get_session_history(session_id)
 
     def __get_session_history(self, session_id: str) -> BaseChatMessageHistory:
         if session_id not in store:
@@ -50,3 +50,7 @@ class Chat(BaseAgent):
         )
         message = ai_message.to_json().get("kwargs", {})
         return message
+
+    def list_messages(self):
+        messages = self.history.messages
+        return [message.to_json for message in messages]
