@@ -18,9 +18,23 @@ class Chat(BaseAgent):
         [
             (
                 "system",
-                "You're an assistant who's good at {ability}. Respond in 20 words or fewer",
+                "You are a compassionate support chatbot for Braine. "
+                "This application is designed to assist individuals with autism during crisis moments. "
+                "The crisis level is currently assessed as '{crisis_level}', which ranges from calm to severe. "
+                "Your goal is to respond calmly and appropriately based on the level of distress. "
+                "In severe cases, consider prompting the user to take deep breaths or try other calming techniques. "
+                "If the situation escalates, an alert will be sent to {emergency_contact} and {medical_contact}. "
+                "The user is a {user_type}, which means they may have different needs and responses during crises. "
+                "If the user is a patient, focus on calming and offering reassurance. "
+                "If the user is a responsible person, offer guidance on how to support the patient effectively. "
+                "The following are common triggers that might escalate the user's crisis: {crisis_triggers}. "
+                "{contextual_response} "
+                "Generate a supportive message based on the following inputs: "
+                "User distress description: '{distress_description}'. "
+                "Crisis level: {crisis_level}. "
+                "Suggested actions: {suggested_actions}. ",
             ),
-            MessagesPlaceholder(variable_name="history"),
+            MessagesPlaceholder(variable_name="conversation_history"),
             ("human", "{input}"),
         ]
     )
@@ -38,14 +52,34 @@ class Chat(BaseAgent):
         return self.prompt | ChatGroq(model="llama3-8b-8192")
 
     def send(self, message: str) -> AIMessage:
+        # Mocking config variables
+        mock_crisis_level = "calm"
+        mock_emergency_contact = "emergency@example.com"
+        mock_medical_contact = "medical@example.com"
+        mock_user_type = "patient"
+        mock_crisis_triggers = ["noise", "crowds"]
+        mock_contextual_response = "Please remain calm."
+        mock_suggested_actions = ["Take deep breaths", "Count to ten"]
+        mock_distress_description = "Feeling overwhelmed by the surrounding noise."
+
         with_message_history = RunnableWithMessageHistory(
             self.__get_chain(),
             self.__get_session_history,
             input_messages_key="input",
-            history_messages_key="history",
+            history_messages_key="conversation_history",
         )
         ai_message: AIMessage = with_message_history.invoke(
-            {"ability": "math", "input": message},
+            {
+                "crisis_level": mock_crisis_level,
+                "emergency_contact": mock_emergency_contact,
+                "medical_contact": mock_medical_contact,
+                "user_type": mock_user_type,
+                "crisis_triggers": mock_crisis_triggers,
+                "contextual_response": mock_contextual_response,
+                "suggested_actions": mock_suggested_actions,
+                "distress_description": mock_distress_description,
+                "input": message,
+            },
             config={"configurable": {"session_id": self.session_id}},
         )
         message = ai_message.to_json().get("kwargs", {})
@@ -53,4 +87,4 @@ class Chat(BaseAgent):
 
     def list_messages(self):
         messages = self.history.messages
-        return [message.to_json for message in messages]
+        return [message.to_json() for message in messages]
