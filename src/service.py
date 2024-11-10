@@ -14,3 +14,9 @@ class BrunaService:
         chat = Chat(session_id)
         message = chat.send(message)
         return message
+
+    @rpc
+    def list_messages(self, session_id: str) -> list:
+        chat = Chat(session_id)
+        messages = chat.list_messages(session_id)
+        return messages
