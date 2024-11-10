@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+
+  email:
+    build:
+      context: .
+    container_name: email_broker
+    environment:
+      - CLOUD_AMQP=${CLOUD_AMQP}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+    restart: always
+    networks:
+      - backend
+
+networks:
+  backend:
+    external: true
