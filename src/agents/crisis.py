@@ -58,7 +58,7 @@ class CrisisAgent(BaseAgent):
                 "Generate a supportive message based on the following inputs: "
                 "User distress description: '{distress_description}'. "
                 "Crisis level: {crisis_level}. "
-                "Suggested actions: {suggested_actions}. ",
+                "Suggested actions: {suggested_actions}. "
                 "Contextual data: {contextual_response} ",
             ),
             MessagesPlaceholder(variable_name="conversation_history"),
