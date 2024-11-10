@@ -8,6 +8,43 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables import Runnable
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_groq import ChatGroq
+import os
+from langchain_community.vectorstores import FAISS
+from langchain.embeddings import OpenAIEmbeddings
+
+
+def load_faiss_index(faiss_path):
+    """Carrega o índice FAISS a partir do caminho especificado."""
+    print(f"Carregando índice FAISS de: {faiss_path}", flush=True)
+    embedding_model = OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY"))
+    vector_store = FAISS.load_local(
+        faiss_path, embedding_model, allow_dangerous_deserialization=True
+    )
+    print("Índice FAISS carregado com sucesso.", flush=True)
+    return vector_store
+
+
+def perform_query(vector_store, query_text, top_k=5):
+    """Realiza uma consulta de similaridade no índice FAISS."""
+    print(f"Realizando consulta: '{query_text}'", flush=True)
+    results = vector_store.similarity_search(query_text, k=top_k)
+    print(f"Top {top_k} resultados encontrados:", flush=True)
+    for idx, result in enumerate(results, start=1):
+        print(f"\nResultado {idx}:", flush=True)
+        print(f"ID: {result.metadata['id']}", flush=True)
+        print(f"Conteúdo: {result.page_content[:500]}...", flush=True)
+    return results
+
+
+def main():
+    faiss_path = "meu_indice_faiss"  # Caminho para o índice FAISS
+    vector_store = load_faiss_index(faiss_path)
+
+    # Defina a sua consulta aqui
+    query_text = "Explique os principais conceitos de aprendizado de máquina."
+
+    # Realiza a consulta
+    perform_query(vector_store, query_text, top_k=5)
 
 
 store: dict = {}
@@ -20,26 +57,19 @@ class AutismAwarenessAgent(BaseAgent):
             (
                 "You are an informational chatbot dedicated to educating users about autism. "
                 "This application aims to provide information about autism diagnosis, behaviors, and how families can create a welcoming environment. "
-                "The user's role is assessed as '{user_role}', which could be a family member, educator, or caregiver. "
-                "Your goal is to respond with accurate information and practical advice based on the user's interest in '{topic_of_interest}'. "
-                "If the user is a family member, provide guidance on creating a nurturing environment. "
-                "If the user is an educator, focus on inclusive practices and strategies for understanding behaviors. "
-                "If the user is a caregiver, give practical tips on communication and daily care. "
-                "The following is the user's current area of interest: {topic_of_interest}. "
-                "Here are known challenges related to autism: {common_challenges}. "
-                "{contextual_response} "
-                "Generate a supportive and informative response based on the following inputs: "
-                "User's specific question: '{user_question}'. "
-                "User role: {user_role}. "
-                "Topic of interest: {topic_of_interest}. "
-                "Suggested resources or practices: {suggested_resources}. "
+                "User Name: {user_name}\n"
+                "User Age: {user_age}\n"
+                "User Profile: {user_profile}\n"
+                "Mother/Father: {user_supervisor}\n"
+                "Contextual data: {contextual_response} "
             ),
             MessagesPlaceholder(variable_name="conversation_history"),
             ("human", "{input}"),
         ]
     )
 
-    def __init__(self, session_id: str):
+    def __init__(self, session_id: str, session_data: str = {}):
+        self.session_data = session_data
         self.session_id = session_id
         self.history: BaseChatMessageHistory = self.__get_session_history(session_id)
 
@@ -47,7 +77,7 @@ class AutismAwarenessAgent(BaseAgent):
         contextual_response = ""
 
         match user_role:
-            case "family_member":
+            case "supervisor":
                 if topic_of_interest == "creating a welcoming environment":
                     contextual_response = "Offer suggestions on setting up predictable routines, sensory-friendly spaces, and using supportive language."
                 elif topic_of_interest == "diagnosis":
@@ -60,12 +90,6 @@ class AutismAwarenessAgent(BaseAgent):
                     contextual_response = "Recommend strategies for inclusive classroom setups, such as visual aids, clear communication, and sensory breaks."
                 elif topic_of_interest == "understanding behaviors":
                     contextual_response = "Provide insights into common behaviors and ways to respond supportively in an educational setting."
-
-            case "caregiver":
-                if topic_of_interest == "daily care tips":
-                    contextual_response = "Offer advice on routines, communication aids, and ways to manage sensory needs."
-                elif topic_of_interest == "behavioral guidance":
-                    contextual_response = "Suggest approaches for reinforcing positive behaviors and setting consistent boundaries."
 
         return contextual_response
 
@@ -80,30 +104,30 @@ class AutismAwarenessAgent(BaseAgent):
     def send(
         self,
         message: str,
-        user_role: str,
-        topic_of_interest: str,
-        user_question: str,
-        common_challenges: str,
-        suggested_resources: str,
     ) -> AIMessage:
-        contextual_response = self.generate_contextual_response(
-            user_role, topic_of_interest
-        )
         # Executa o chain com as variáveis apropriadas
         with_message_history = RunnableWithMessageHistory(
             self.__get_chain(),
             self.__get_session_history,
             input_messages_key="input",
-            history_messages_key="history",
+            history_messages_key="conversation_history",
         )
+        faiss_path = "meu_indice_faiss"  # Caminho para o índice FAISS
+        vector_store = load_faiss_index(faiss_path)
+
+        # Defina a sua consulta aqui
+        query_text = "Explique os principais conceitos de aprendizado de máquina."
+
+        # Realiza a consulta
+        results = perform_query(vector_store, query_text, top_k=5)
         ai_message: AIMessage = with_message_history.invoke(
             {
-                "user_role": user_role,
-                "topic_of_interest": topic_of_interest,
-                "common_challenges": common_challenges,
-                "contextual_response": contextual_response,
-                "user_question": user_question,
-                "suggested_resources": suggested_resources,
+                "user_name": self.session_data.get("name", "Thiago"),
+                "user_age": self.session_data.get("age", "22"),
+                "user_profile": self.session_data.get("profile", "Paciente"),
+                "user_supervisor": self.session_data.get("supervisor", "Daniel"),
+                "contextual_response": results,
+                "input": message,
             },
             config={"configurable": {"session_id": self.session_id}},
         )

@@ -1,6 +1,7 @@
 from nameko.rpc import rpc
 from dotenv import load_dotenv
 from src.agents.crisis import CrisisAgent, AIMessage
+from src.agents.info import AutismAwarenessAgent
 from nameko.dependency_providers import DependencyProvider
 from . import db
 
@@ -25,8 +26,14 @@ class BrunaService:
     session_data: dict = SessionDataDependency()
 
     @rpc
-    def send_crisis(self, session_id: str, message: str) -> AIMessage:
+    def send_help(self, session_id: str, message: str) -> AIMessage:
         chat = CrisisAgent(session_id)
+        message = chat.send(message)
+        return message
+
+    @rpc
+    def send_info(self, session_id: str, message: str) -> AIMessage:
+        chat = AutismAwarenessAgent(session_id)
         message = chat.send(message)
         return message
 

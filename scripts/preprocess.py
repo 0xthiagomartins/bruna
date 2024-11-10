@@ -52,6 +52,48 @@ def store_embeddings(chunks, faiss_path):
     print(f"Índice FAISS salvo em: {faiss_path}")
 
 
+def load_faiss_index(faiss_path):
+    """Carrega o índice FAISS a partir do caminho especificado."""
+    print(f"Carregando índice FAISS de: {faiss_path}")
+    embedding_model = OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY"))
+
+    # Habilita a deserialização perigosa
+    vector_store = FAISS.load_local(
+        faiss_path, embedding_model, allow_dangerous_deserialization=True
+    )
+    print("Índice FAISS carregado com sucesso.")
+    return vector_store
+
+
+def perform_query(vector_store, query_text, top_k=5):
+    """Realiza uma consulta de similaridade no índice FAISS."""
+    print(f"Realizando consulta: '{query_text}'")
+    results = vector_store.similarity_search(query_text, k=top_k)
+    print(f"Top {top_k} resultados encontrados:")
+    for idx, result in enumerate(results, start=1):
+        print(f"\nResultado {idx}:")
+        print(f"ID: {result.metadata['id']}")
+        print(
+            f"Conteúdo: {result.page_content[:500]}..."
+        )  # Mostra os primeiros 500 caracteres
+    return results
+
+
+def test_query(faiss_path):
+    """
+    Função de teste para verificar se o índice FAISS foi criado e pode ser consultado.
+    """
+    print("\nIniciando o teste de consulta no índice FAISS.")
+    vector_store = load_faiss_index(faiss_path)
+
+    # Defina uma consulta de exemplo
+    query_text = "Explique os principais conceitos de aprendizado de máquina."
+
+    # Realiza a consulta
+    perform_query(vector_store, query_text, top_k=3)
+    print("Teste de consulta concluído.\n")
+
+
 def main():
     print("Iniciando o processo de pré-processamento.")
     pdf_folder = "./resources/pdf"  # Pasta com PDFs
@@ -65,6 +107,9 @@ def main():
     # Armazena embeddings com FAISS
     store_embeddings(chunks, faiss_path)
     print("Processo de pré-processamento concluído com sucesso.")
+
+    # Executa a função de teste de consulta
+    test_query(faiss_path)
 
 
 if __name__ == "__main__":
