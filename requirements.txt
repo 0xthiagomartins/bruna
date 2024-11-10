@@ -7,3 +7,5 @@ pytest-cov
 python-dotenv
 rich
 nameko==3.0.0-rc11
+faiss-cpu 
+PyPDF2
