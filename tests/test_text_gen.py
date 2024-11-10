@@ -1,14 +1,16 @@
 import pytest
-from agents.crisis import Chat
+from src.agents.crisis import CrisisAgent
 from rich import print
 
 
 def test_send():
-    chat = Chat("session_id")
+    chat = CrisisAgent("session_id")
     message = chat.send("Me envie uma mensagem de bom dia!")
     print(message)
     assert isinstance(message.get("content"), str)
 
 
 def test_list_messages():
-    chat = Chat("session_id")
+    chat = CrisisAgent("session_id")
+    messages = chat.list_messages()
+    print(messages)

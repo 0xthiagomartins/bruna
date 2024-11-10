@@ -2,21 +2,19 @@ import json
 from datetime import datetime
 from collections import Counter, defaultdict
 
-class ReportGenerator:
-    def __init__(self, history_store):
-        """
-        Inicializa o gerador de relatórios com um histórico de conversas.
 
-        Args:
-            history_store (dict): Um dicionário com o histórico de conversas, 
-            onde cada chave é o session_id e o valor é o objeto ChatMessageHistory.
-        """
-        self.history_store = history_store
+store: dict = {}
+
+
+class ReportGenerator:
+
+    def __init__(self, history_store):
+        pass
 
     def extract_interactions(self):
         """
         Extrai todas as interações das sessões de chat para análise e relatório.
-        
+
         Returns:
             list: Uma lista de dicionários contendo detalhes de cada interação.
         """
@@ -37,28 +35,22 @@ class ReportGenerator:
         return interactions
 
     def generate_summary_report(self):
-        """
-        Gera um relatório resumido com base nas interações.
-
-        Returns:
-            dict: Um dicionário contendo dados resumidos para o relatório.
-        """
         interactions = self.extract_interactions()
         summary = {
             "total_interactions": len(interactions),
-            "topics_of_interest": Counter([i["topic_of_interest"] for i in interactions]),
-            "user_roles": Counter([i["user_role"] for i in interactions if i["user_role"]]),
-            "crisis_levels": Counter([i["crisis_level"] for i in interactions if i["crisis_level"]]),
+            "topics_of_interest": Counter(
+                [i["topic_of_interest"] for i in interactions]
+            ),
+            "user_roles": Counter(
+                [i["user_role"] for i in interactions if i["user_role"]]
+            ),
+            "crisis_levels": Counter(
+                [i["crisis_level"] for i in interactions if i["crisis_level"]]
+            ),
         }
         return summary
 
     def generate_detailed_report(self, output_path="detailed_report.json"):
-        """
-        Gera um relatório detalhado em JSON com todas as interações.
-
-        Args:
-            output_path (str): Caminho para salvar o relatório JSON.
-        """
         interactions = self.extract_interactions()
         report = {
             "generated_on": datetime.now().isoformat(),
@@ -70,18 +62,12 @@ class ReportGenerator:
         print(f"Relatório detalhado salvo em {output_path}")
 
     def generate_user_role_analysis(self):
-        """
-        Gera uma análise com base no papel do usuário e tópicos abordados.
-
-        Returns:
-            dict: Um dicionário com a quantidade de interações por papel do usuário e tópicos.
-        """
         interactions = self.extract_interactions()
         role_topic_count = defaultdict(lambda: defaultdict(int))
-        
+
         for interaction in interactions:
             role = interaction["user_role"]
             topic = interaction["topic_of_interest"]
             role_topic_count[role][topic] += 1
-        
+
         return role_topic_count

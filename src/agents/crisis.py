@@ -1,19 +1,19 @@
 from .base import BaseAgent
-from langchain_core.runnables import Runnable
 from langchain_core.prompts import BasePromptTemplate
-from langchain_groq import ChatGroq
-from langchain_core.messages import AIMessage, AIMessageChunk, BaseMessage
-from rich import print
+from langchain_core.messages import AIMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_core.runnables import Runnable
+from langchain_core.chat_history import BaseChatMessageHistory
+from langchain_groq import ChatGroq
 
-
-store = {}
+store: dict = {}
 
 
 class CrisisAgent(BaseAgent):
+
     prompt: BasePromptTemplate = ChatPromptTemplate.from_messages(
         [
             (

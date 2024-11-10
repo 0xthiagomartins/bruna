@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 from src.config import BaseConfig
-from typing import Optional
 from langchain_core.messages import AIMessage
+
+
+store = {}
 
 
 class BaseAgent(ABC):
