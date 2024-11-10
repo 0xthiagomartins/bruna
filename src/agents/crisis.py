@@ -50,10 +50,7 @@ class CrisisAgent(BaseAgent):
                 "The crisis level is currently assessed as '{crisis_level}', which ranges from calm to severe. "
                 "Your goal is to respond calmly and appropriately based on the level of distress. "
                 "In severe cases, consider prompting the user to take deep breaths or try other calming techniques. "
-                "If the situation escalates, an alert will be sent to {emergency_contact} and {medical_contact}. "
                 "The user is a {user_type}, which means they may have different needs and responses during crises. "
-                "If the user is a patient, focus on calming and offering reassurance. "
-                "If the user is a responsible person, offer guidance on how to support the patient effectively. "
                 "The following are common triggers that might escalate the user's crisis: {crisis_triggers}. "
                 "Generate a supportive message based on the following inputs: "
                 "User distress description: '{distress_description}'. "
@@ -80,8 +77,6 @@ class CrisisAgent(BaseAgent):
 
     def send(self, message: str) -> AIMessage:
         mock_crisis_level = "calm"
-        mock_emergency_contact = "emergency@example.com"
-        mock_medical_contact = "medical@example.com"
         mock_user_type = "patient"
         mock_crisis_triggers = ["noise", "crowds"]
         mock_suggested_actions = ["Take deep breaths", "Count to ten"]
@@ -100,8 +95,6 @@ class CrisisAgent(BaseAgent):
         ai_message: AIMessage = with_message_history.invoke(
             {
                 "crisis_level": mock_crisis_level,
-                "emergency_contact": mock_emergency_contact,
-                "medical_contact": mock_medical_contact,
                 "user_type": mock_user_type,
                 "crisis_triggers": mock_crisis_triggers,
                 "suggested_actions": mock_suggested_actions,
