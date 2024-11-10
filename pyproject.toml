@@ -20,6 +20,7 @@ faiss-cpu = "^1.9.0"
 pypdf2 = "^3.0.1"
 sqlmodel = "^0.0.22"
 sqlmodel-controller = "^0.1.8"
+openai = "^1.54.3"
 
 [build-system]
 requires = ["poetry-core"]
