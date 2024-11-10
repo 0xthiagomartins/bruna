@@ -6,12 +6,12 @@ from langchain_core.messages import AIMessage
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
-from llama_api_wrapper import LlamaAPI  
+from llama_api_wrapper import LlamaAPI
 
 store = {}
 
-class AutismAwarenessChat(BaseAgent):
-    # Template de prompt para educar sobre autismo, diagnóstico e práticas acolhedoras
+
+class AutismAwarenessAgent(BaseAgent):
     prompt: BasePromptTemplate = PromptTemplate(
         template=(
             "You are an informational chatbot dedicated to educating users about autism. "
@@ -59,43 +59,39 @@ class AutismAwarenessChat(BaseAgent):
 
         if user_role == "family_member":
             if topic_of_interest == "creating a welcoming environment":
-                contextual_response = (
-                    "Offer suggestions on setting up predictable routines, sensory-friendly spaces, and using supportive language."
-                )
+                contextual_response = "Offer suggestions on setting up predictable routines, sensory-friendly spaces, and using supportive language."
             elif topic_of_interest == "diagnosis":
-                contextual_response = (
-                    "Provide guidance on early signs, seeking professional help, and understanding the diagnostic process."
-                )
+                contextual_response = "Provide guidance on early signs, seeking professional help, and understanding the diagnostic process."
             elif topic_of_interest == "support strategies":
-                contextual_response = (
-                    "Suggest practical ways to encourage communication and reinforce positive behaviors."
-                )
+                contextual_response = "Suggest practical ways to encourage communication and reinforce positive behaviors."
 
         elif user_role == "educator":
             if topic_of_interest == "inclusive practices":
-                contextual_response = (
-                    "Recommend strategies for inclusive classroom setups, such as visual aids, clear communication, and sensory breaks."
-                )
+                contextual_response = "Recommend strategies for inclusive classroom setups, such as visual aids, clear communication, and sensory breaks."
             elif topic_of_interest == "understanding behaviors":
-                contextual_response = (
-                    "Provide insights into common behaviors and ways to respond supportively in an educational setting."
-                )
+                contextual_response = "Provide insights into common behaviors and ways to respond supportively in an educational setting."
 
         elif user_role == "caregiver":
             if topic_of_interest == "daily care tips":
-                contextual_response = (
-                    "Offer advice on routines, communication aids, and ways to manage sensory needs."
-                )
+                contextual_response = "Offer advice on routines, communication aids, and ways to manage sensory needs."
             elif topic_of_interest == "behavioral guidance":
-                contextual_response = (
-                    "Suggest approaches for reinforcing positive behaviors and setting consistent boundaries."
-                )
+                contextual_response = "Suggest approaches for reinforcing positive behaviors and setting consistent boundaries."
 
         return contextual_response
 
-    def send(self, message: str, user_role: str, topic_of_interest: str, user_question: str, common_challenges: str, suggested_resources: str) -> AIMessage:
+    def send(
+        self,
+        message: str,
+        user_role: str,
+        topic_of_interest: str,
+        user_question: str,
+        common_challenges: str,
+        suggested_resources: str,
+    ) -> AIMessage:
         # Gera a resposta contextual baseada no papel do usuário e tema de interesse
-        contextual_response = self.generate_contextual_response(user_role, topic_of_interest)
+        contextual_response = self.generate_contextual_response(
+            user_role, topic_of_interest
+        )
 
         # Executa o chain com as variáveis apropriadas
         with_message_history = RunnableWithMessageHistory(

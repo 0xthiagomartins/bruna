@@ -13,7 +13,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 store = {}
 
 
-class Chat(BaseAgent):
+class CrisisAgent(BaseAgent):
     prompt: BasePromptTemplate = ChatPromptTemplate.from_messages(
         [
             (
