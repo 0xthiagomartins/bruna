@@ -36,17 +36,6 @@ def perform_query(vector_store, query_text, top_k=5):
     return results
 
 
-def main():
-    faiss_path = "meu_indice_faiss"  # Caminho para o índice FAISS
-    vector_store = load_faiss_index(faiss_path)
-
-    # Defina a sua consulta aqui
-    query_text = "Explique os principais conceitos de aprendizado de máquina."
-
-    # Realiza a consulta
-    perform_query(vector_store, query_text, top_k=5)
-
-
 store: dict = {}
 
 
@@ -73,26 +62,6 @@ class AutismAwarenessAgent(BaseAgent):
         self.session_id = session_id
         self.history: BaseChatMessageHistory = self.__get_session_history(session_id)
 
-    def generate_contextual_response(self, user_role, topic_of_interest):
-        contextual_response = ""
-
-        match user_role:
-            case "supervisor":
-                if topic_of_interest == "creating a welcoming environment":
-                    contextual_response = "Offer suggestions on setting up predictable routines, sensory-friendly spaces, and using supportive language."
-                elif topic_of_interest == "diagnosis":
-                    contextual_response = "Provide guidance on early signs, seeking professional help, and understanding the diagnostic process."
-                elif topic_of_interest == "support strategies":
-                    contextual_response = "Suggest practical ways to encourage communication and reinforce positive behaviors."
-
-            case "educator":
-                if topic_of_interest == "inclusive practices":
-                    contextual_response = "Recommend strategies for inclusive classroom setups, such as visual aids, clear communication, and sensory breaks."
-                elif topic_of_interest == "understanding behaviors":
-                    contextual_response = "Provide insights into common behaviors and ways to respond supportively in an educational setting."
-
-        return contextual_response
-
     def __get_session_history(self, session_id: str) -> BaseChatMessageHistory:
         if session_id not in store:
             store[session_id] = ChatMessageHistory()
@@ -105,7 +74,6 @@ class AutismAwarenessAgent(BaseAgent):
         self,
         message: str,
     ) -> AIMessage:
-        # Executa o chain com as variáveis apropriadas
         with_message_history = RunnableWithMessageHistory(
             self.__get_chain(),
             self.__get_session_history,
@@ -114,11 +82,7 @@ class AutismAwarenessAgent(BaseAgent):
         )
         faiss_path = "meu_indice_faiss"  # Caminho para o índice FAISS
         vector_store = load_faiss_index(faiss_path)
-
-        # Defina a sua consulta aqui
-        query_text = "Explique os principais conceitos de aprendizado de máquina."
-
-        # Realiza a consulta
+        query_text = message
         results = perform_query(vector_store, query_text, top_k=5)
         ai_message: AIMessage = with_message_history.invoke(
             {

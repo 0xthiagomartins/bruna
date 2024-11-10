@@ -8,8 +8,35 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables import Runnable
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_groq import ChatGroq
+import os
+from langchain_community.vectorstores import FAISS
+from langchain.embeddings import OpenAIEmbeddings
+
 
 store: dict = {}
+
+
+def load_faiss_index(faiss_path):
+    """Carrega o índice FAISS a partir do caminho especificado."""
+    print(f"Carregando índice FAISS de: {faiss_path}", flush=True)
+    embedding_model = OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY"))
+    vector_store = FAISS.load_local(
+        faiss_path, embedding_model, allow_dangerous_deserialization=True
+    )
+    print("Índice FAISS carregado com sucesso.", flush=True)
+    return vector_store
+
+
+def perform_query(vector_store, query_text, top_k=5):
+    """Realiza uma consulta de similaridade no índice FAISS."""
+    print(f"Realizando consulta: '{query_text}'", flush=True)
+    results = vector_store.similarity_search(query_text, k=top_k)
+    print(f"Top {top_k} resultados encontrados:", flush=True)
+    for idx, result in enumerate(results, start=1):
+        print(f"\nResultado {idx}:", flush=True)
+        print(f"ID: {result.metadata['id']}", flush=True)
+        print(f"Conteúdo: {result.page_content[:500]}...", flush=True)
+    return results
 
 
 class CrisisAgent(BaseAgent):
@@ -52,13 +79,11 @@ class CrisisAgent(BaseAgent):
         return self.prompt | ChatGroq(model="llama-3.2-90b-vision-preview")
 
     def send(self, message: str) -> AIMessage:
-        # Mocking config variables
         mock_crisis_level = "calm"
         mock_emergency_contact = "emergency@example.com"
         mock_medical_contact = "medical@example.com"
         mock_user_type = "patient"
         mock_crisis_triggers = ["noise", "crowds"]
-        mock_contextual_response = "Please remain calm."
         mock_suggested_actions = ["Take deep breaths", "Count to ten"]
         mock_distress_description = "Feeling overwhelmed by the surrounding noise."
 
@@ -68,6 +93,10 @@ class CrisisAgent(BaseAgent):
             input_messages_key="input",
             history_messages_key="conversation_history",
         )
+        faiss_path = "meu_indice_faiss"  # Caminho para o índice FAISS
+        vector_store = load_faiss_index(faiss_path)
+        query_text = message
+        results = perform_query(vector_store, query_text, top_k=5)
         ai_message: AIMessage = with_message_history.invoke(
             {
                 "crisis_level": mock_crisis_level,
@@ -75,9 +104,9 @@ class CrisisAgent(BaseAgent):
                 "medical_contact": mock_medical_contact,
                 "user_type": mock_user_type,
                 "crisis_triggers": mock_crisis_triggers,
-                "contextual_response": mock_contextual_response,
                 "suggested_actions": mock_suggested_actions,
                 "distress_description": mock_distress_description,
+                "contextual_response": results,
                 "input": message,
             },
             config={"configurable": {"session_id": self.session_id}},
