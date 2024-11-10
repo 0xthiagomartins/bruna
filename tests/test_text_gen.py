@@ -1,5 +1,5 @@
 import pytest
-from src.agents.chat import Chat
+from src.agents.chat_crisis import Chat
 from rich import print
 
 
