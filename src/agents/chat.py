@@ -49,7 +49,7 @@ class Chat(BaseAgent):
         return store[session_id]
 
     def __get_chain(self) -> Runnable:
-        return self.prompt | ChatGroq(model="llama3-8b-8192")
+        return self.prompt | ChatGroq(model="llama-3.2-90b-vision-preview")
 
     def send(self, message: str) -> AIMessage:
         # Mocking config variables
