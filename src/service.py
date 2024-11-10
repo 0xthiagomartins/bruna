@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 from src.agents.crisis import CrisisAgent, AIMessage
 from src.agents.info import AutismAwarenessAgent
 from nameko.dependency_providers import DependencyProvider
-from . import db
 
 
 class SessionDataDependency(DependencyProvider):
