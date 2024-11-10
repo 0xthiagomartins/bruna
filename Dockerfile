@@ -7,9 +7,13 @@ RUN apk update && apk add --no-cache netcat-openbsd
 WORKDIR /app
 ADD . ./
 
-COPY requirements.txt .
+RUN pip install --upgrade pip && \
+    pip install poetry && \
+    poetry config virtualenvs.create false --local
+
+RUN poetry install
+
 RUN apk add --no-cache --virtual .build-deps gcc musl-dev libffi-dev \
-    && pip install --no-cache-dir -r requirements.txt \
     && apk del .build-deps
 
 
