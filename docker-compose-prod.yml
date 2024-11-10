@@ -8,4 +8,8 @@ services:
       - CLOUD_AMQP=${CLOUD_AMQP}
       - GROQ_API_KEY=${GROQ_API_KEY}
     restart: always
+    networks:
+      - backend
 
+networks:
+  backend:
