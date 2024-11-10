@@ -1,12 +1,10 @@
 version: "3.8"
 services:
 
-  braine_backend:
+  bruna:
     build:
       context: .
-    environment:
-      - CLOUD_AMQP=${CLOUD_AMQP}
-      - GROQ_API_KEY=${GROQ_API_KEY}
+    env_file: ./resources/.env
     restart: always
     volumes:
       - .:/app

@@ -895,10 +895,7 @@ aiohttp = ">=3.8.3,<4.0.0"
 langchain-core = ">=0.3.15,<0.4.0"
 langchain-text-splitters = ">=0.3.0,<0.4.0"
 langsmith = ">=0.1.17,<0.2.0"
-numpy = [
-    {version = ">=1,<2", markers = "python_version < \"3.12\""},
-    {version = ">=1.26.0,<2.0.0", markers = "python_version >= \"3.12\""},
-]
+numpy = {version = ">=1.26.0,<2.0.0", markers = "python_version >= \"3.12\""}
 pydantic = ">=2.7.4,<3.0.0"
 PyYAML = ">=5.3"
 requests = ">=2,<3"
@@ -923,10 +920,7 @@ httpx-sse = ">=0.4.0,<0.5.0"
 langchain = ">=0.3.6,<0.4.0"
 langchain-core = ">=0.3.15,<0.4.0"
 langsmith = ">=0.1.125,<0.2.0"
-numpy = [
-    {version = ">=1,<2", markers = "python_version < \"3.12\""},
-    {version = ">=1.26.0,<2.0.0", markers = "python_version >= \"3.12\""},
-]
+numpy = {version = ">=1.26.0,<2.0.0", markers = "python_version >= \"3.12\""}
 pydantic-settings = ">=2.4.0,<3.0.0"
 PyYAML = ">=5.3"
 requests = ">=2,<3"
@@ -2291,5 +2285,5 @@ propcache = ">=0.2.0"
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.11.3"
-content-hash = "07f871b8e173e3bac6e53c3e650d0e514b6a58528906c0532b705458fe9033b3"
+python-versions = "^3.12"
+content-hash = "01b58f8fda654db459a4914796cd68e7fe36da804139b8bdc5cc0302ffcbfc96"
