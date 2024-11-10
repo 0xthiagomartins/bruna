@@ -44,13 +44,14 @@ class AutismAwarenessAgent(BaseAgent):
     prompt: BasePromptTemplate = ChatPromptTemplate.from_messages(
         [
             (
+                "system",
                 "You are an informational chatbot dedicated to educating users about autism. "
                 "This application aims to provide information about autism diagnosis, behaviors, and how families can create a welcoming environment. "
                 "User Name: {user_name}\n"
                 "User Age: {user_age}\n"
                 "User Profile: {user_profile}\n"
                 "Mother/Father: {user_supervisor}\n"
-                "Contextual data: {contextual_response} "
+                "Contextual data: {contextual_response} ",
             ),
             MessagesPlaceholder(variable_name="conversation_history"),
             ("human", "{input}"),
