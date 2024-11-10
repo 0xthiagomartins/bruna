@@ -45,6 +45,7 @@ class AutismAwarenessAgent(BaseAgent):
         [
             (
                 "system",
+                "Your name is Bruna. You are a compassionate support chatbot for Braine AI."
                 "You are an informational chatbot dedicated to educating users about autism. "
                 "This application aims to provide information about autism diagnosis, behaviors, and how families can create a welcoming environment. "
                 "User Name: {user_name}\n"
