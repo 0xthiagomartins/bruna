@@ -55,11 +55,11 @@ class CrisisAgent(BaseAgent):
                 "If the user is a patient, focus on calming and offering reassurance. "
                 "If the user is a responsible person, offer guidance on how to support the patient effectively. "
                 "The following are common triggers that might escalate the user's crisis: {crisis_triggers}. "
-                "{contextual_response} "
                 "Generate a supportive message based on the following inputs: "
                 "User distress description: '{distress_description}'. "
                 "Crisis level: {crisis_level}. "
                 "Suggested actions: {suggested_actions}. ",
+                "Contextual data: {contextual_response} ",
             ),
             MessagesPlaceholder(variable_name="conversation_history"),
             ("human", "{input}"),
