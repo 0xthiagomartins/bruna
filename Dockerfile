@@ -1,8 +1,6 @@
-FROM python:3.13-alpine
+FROM python:3.11.3-slim
 
 ENV PYTHONUNBUFFERED=0
-
-RUN apk update && apk add --no-cache netcat-openbsd
 
 WORKDIR /app
 ADD . ./
@@ -12,11 +10,3 @@ RUN pip install --upgrade pip && \
     poetry config virtualenvs.create false --local
 
 RUN poetry install
-
-RUN apk add --no-cache --virtual .build-deps gcc musl-dev libffi-dev \
-    && apk del .build-deps
-
-
-RUN chmod +x ./run.sh
-
-CMD ["./run.sh"]

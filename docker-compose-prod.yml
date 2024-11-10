@@ -8,8 +8,11 @@ services:
       - CLOUD_AMQP=${CLOUD_AMQP}
       - GROQ_API_KEY=${GROQ_API_KEY}
     restart: always
+    volumes:
+      - .:/app
+    command: ./run.sh
     networks:
-      - backend
+      - proxy
 
 networks:
-  backend:
+  proxy:
