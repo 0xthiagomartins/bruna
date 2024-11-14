@@ -1,0 +1,22 @@
+services:
+  braine:
+    image: braine:latest
+    env_file: .env
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - .:/app
+    working_dir: /app
+    command:
+      [
+          "./scripts/start-local.sh"
+      ]
+    environment:
+      PYTHONUNBUFFERED: 1
+    networks:
+      - proxy
+networks:
+  proxy:
+    external: true

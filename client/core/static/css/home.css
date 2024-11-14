@@ -1,0 +1,41 @@
+.bg-nav-braine {
+  background: #D35482;
+  color: white !important;
+}
+.bg-chat-bruna-init {
+  background: #D35482;
+  color: white;
+}
+.bg-chat-bruna {
+  background: #cb83a0;
+  color: white
+}
+.bg-chat-client {
+  background: #eddada;
+  color: black
+}
+.bg-user {
+  background: #eddada;
+  border-radius: 10px;
+}
+.btn-brain-send {
+  background: #D35482;
+  border-radius: 20%;
+  font-size: 2rem;
+  color: white;
+  /* padding-right: 20px; */
+  width: 60px;                   /* Largura do botão */
+  height: 60px;
+}
+
+.menu-client {
+}
+.menu-client:hover {
+  background: #D35482 !important;
+}
+.menu-exit {
+
+}
+.menu-exit:hover {
+  background: #D35482 !important;
+}

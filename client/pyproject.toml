@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "braine"
+version = "0.1.0"
+description = ""
+authors = ["None"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11.3"
+Django = "^5.0.6"
+psycopg2-binary = "^2.9.9"
+django-cors-headers = "^4.3.1"
+whitenoise = "^6.6.0"
+gunicorn = "^23.0.0"
+nameko = "3.0.0-rc11"
+python-dotenv = "^1.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
